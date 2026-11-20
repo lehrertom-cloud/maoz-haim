@@ -7,28 +7,47 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>מעוז חיים · תקלות ומשימות</title>
+<link rel="preconnect" href="https://script.google.com">
+<link rel="preconnect" href="https://script.googleusercontent.com">
+<style>
+body{margin:0;font-family:system-ui,Arial,sans-serif;background:#f6f8f5}
+.hd{background:#1f4e3d;color:#fff;padding:14px 16px;font-weight:700;font-size:18px}
+.wrap{max-width:820px;margin:0 auto;padding:8px 14px}
+.skel{height:74px;border-radius:12px;margin:10px 0;background:linear-gradient(90deg,#eceee9 25%,#f7f8f5 50%,#eceee9 75%);background-size:200% 100%;animation:sk 1.2s infinite linear}
+@keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+#err{text-align:center;color:#555;margin-top:30px}
+</style>
 </head>
-<body style="font-family:system-ui,Arial,sans-serif;background:#f6f8f5;margin:0">
-<div id="ld" style="text-align:center;margin-top:40vh;color:#555">טוען את האפליקציה…</div>
+<body>
+<div class="hd">מעוז חיים · תקלות ומשימות</div>
+<div class="wrap" id="ld"><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
 <script>
-// המסכים נטענים מגוגל, והנתונים נשמרים רק בגיליון של מעוז חיים.
-// כל פעולה נבדקת בשרת מול הקוד האישי. בקובץ הזה אין נתונים ואין קודים.
+// המסכים נשמרים בטלפון ונפתחים מיד. ברקע מורדת הגרסה העדכנית, והיא תופיע בפתיחה הבאה.
+// הנתונים נשמרים רק בגיליון של מעוז חיים, וכל פעולה נבדקת בשרת מול הקוד האישי. בקובץ הזה אין נתונים ואין קודים.
 var MH_URL = 'https://script.google.com/macros/s/AKfycbwILFwTYPqVd_PKCjD6FKGEobTF8pW2pPXOMgcPgUPrwcn77LoeZiAnE4sxZAd0skSFzw/exec';
-function start() {
-  document.getElementById('ld').textContent = 'טוען את האפליקציה…';
-  fetch(MH_URL + '?ui=1')
-    .then(function (r) { if (!r.ok) throw new Error('שגיאה ' + r.status); return r.text(); })
-    .then(function (html) {
-      var inject = '<head><script>window.MH_API = ' + JSON.stringify(MH_URL) + ';<\/script>';
-      document.open();
-      document.write(html.replace('<head>', inject));
-      document.close();
-    })
-    .catch(function (e) {
-      document.getElementById('ld').innerHTML = 'לא הצלחתי לטעון את האפליקציה (' + e.message + ').<br><br><button onclick="start()" style="font-size:16px;padding:10px 20px">נסה שוב</button>';
-    });
+var UI_KEY = 'mh_ui';
+function show(html) {
+  var inject = '<head><script>window.MH_API = ' + JSON.stringify(MH_URL) + ';<\/script>';
+  document.open();
+  document.write(html.replace('<head>', inject));
+  document.close();
 }
-start();
+function getCached() { try { return localStorage.getItem(UI_KEY); } catch (e) { return null; } }
+function setCached(h) { try { localStorage.setItem(UI_KEY, h); } catch (e) {} }
+// מחכים שהדף הקטן ייטען עד הסוף, ורק אז מחליפים אותו באפליקציה
+function whenReady(f) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', f); else f(); }
+var cached = getCached();
+var fresh = fetch(MH_URL + '?ui=1', { cache: 'no-store' })
+  .then(function (r) { if (!r.ok) throw new Error('שגיאה ' + r.status); return r.text(); })
+  .then(function (h) { if (h.indexOf('<head>') < 0) throw new Error('תשובה לא צפויה'); setCached(h); return h; });
+if (cached) {
+  whenReady(function () { show(cached); });
+  fresh.catch(function () {});
+} else {
+  fresh.then(function (h) { whenReady(function () { show(h); }); }).catch(function (e) {
+    document.getElementById('ld').innerHTML = '<div id="err">לא הצלחתי לטעון את האפליקציה (' + e.message + ').<br><br><button onclick="location.reload()" style="font-size:16px;padding:10px 20px">נסה שוב</button></div>';
+  });
+}
 </script>
 </body>
 </html>
