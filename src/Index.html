@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>מעוז חיים · תקלות ומשימות</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--g:#1f4e3d;--bg:#f2f4f1;--ink:#1c2420;--mut:#68736d;--line:#dfe4de;--red:#d23a2e;--org:#e08a1e;--grn:#3a8f5c;--blu:#2f6db5;--gry:#9aa39d}
+*{box-sizing:border-box}
+body{margin:0;font-family:Heebo,system-ui,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:16px;-webkit-tap-highlight-color:transparent}
+header{position:sticky;top:0;z-index:5;background:var(--g);color:#fff;padding:12px 14px 0;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.top{display:flex;align-items:center;gap:8px;max-width:820px;margin:0 auto}
+.top h1{font-size:18px;margin:0;flex:1;font-weight:700;line-height:1.2}
+.top h1 small{display:block;font-weight:400;font-size:12px;opacity:.75}
+.ibtn{background:rgba(255,255,255,.16);border:0;color:#fff;border-radius:10px;height:40px;min-width:40px;padding:0 10px;font:inherit;font-size:16px;cursor:pointer}
+.ibtn.add{background:#fff;color:var(--g);font-weight:700;padding:0 14px}
+.stats{display:flex;gap:8px;margin:10px auto 6px;overflow-x:auto;max-width:820px;scrollbar-width:none}
+.stat{background:rgba(255,255,255,.12);border-radius:10px;padding:6px 12px;white-space:nowrap;font-size:12px;cursor:pointer}
+.stat b{font-size:20px;display:block;line-height:1.1}
+.stat.red b{color:#ffb3ab}
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;max-width:820px;margin:0 auto}
+.tab{border:0;background:none;color:#cfe0d7;font:inherit;font-size:14px;padding:10px 9px;white-space:nowrap;border-bottom:3px solid transparent;cursor:pointer}
+.tab.on{color:#fff;border-color:#fff;font-weight:700}
+.tab i{font-style:normal;background:rgba(255,255,255,.2);border-radius:9px;padding:0 6px;font-size:12px;margin-inline-start:4px}
+.filters{display:flex;gap:6px;padding:10px 0;flex-wrap:wrap}
+.filters input,.filters select{flex:1;min-width:110px;height:42px;border:1px solid var(--line);border-radius:10px;padding:0 10px;font:inherit;font-size:15px;background:#fff;color:var(--ink)}
+@media(max-width:600px){.filters input{flex-basis:100%}}
+main{padding:0 12px 40px;max-width:820px;margin:0 auto}
+.demo{background:#fff4d6;border:1px solid #f0d88a;border-radius:10px;padding:8px 12px;font-size:13px;margin-top:10px}
+.card{background:#fff;border-radius:12px;padding:12px 14px;margin-bottom:10px;box-shadow:0 1px 2px rgba(0,0,0,.07);border-inline-start:6px solid #c9cfca;cursor:pointer}
+.card.pu{border-color:var(--red)}.card.pw{border-color:var(--org)}.card.pp{border-color:var(--grn)}
+.r1{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--mut)}
+.loc{font-weight:700;color:var(--ink);font-size:14px}
+.desc{margin:6px 0 8px;line-height:1.45;white-space:pre-wrap}
+.desc.big{font-size:17px;margin:10px 0}
+.meta{display:flex;flex-wrap:wrap;gap:6px 10px;font-size:13px;color:var(--mut);align-items:center}
+.b{border-radius:999px;padding:2px 9px;font-size:12px;font-weight:500;background:#eef1ed;color:var(--ink)}
+.b.pu{background:#fde3e0;color:#a3241a}.b.pw{background:#fdeed8;color:#94560b}.b.pp{background:#e1f1e7;color:#24663f}
+.b.sn{background:#e8eefb;color:#234f8f}.b.si{background:#fff1c9;color:#7a5a00}.b.sw{background:#efe6f8;color:#5b3a86}.b.sd{background:#dff3e6;color:#1f6b3d}.b.sc{background:#eceeec;color:#59625d}
+.late{color:var(--red);font-weight:700}
+.empty{text-align:center;color:var(--mut);padding:40px 10px}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.42);display:none;z-index:20;align-items:flex-end;justify-content:center}
+.ov.on{display:flex}
+.sheet{background:#fff;width:100%;max-width:640px;max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;padding:16px 16px 24px}
+@media(min-width:700px){.ov{align-items:center}.sheet{border-radius:18px}}
+.sh-head{display:flex;justify-content:space-between;align-items:center;font-size:17px}
+.x{border:0;background:#eef1ed;border-radius:50%;width:36px;height:36px;font-size:16px;cursor:pointer}
+.info{font-size:13px;color:var(--mut)}
+.links{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.lnk{display:inline-block;background:#eef3ff;color:var(--blu);border-radius:10px;padding:8px 12px;text-decoration:none;font-size:14px}
+label{display:block;font-size:13px;color:var(--mut);margin:12px 0 4px}
+.sheet input,.sheet select,.sheet textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;font:inherit;font-size:16px;background:#fff;color:var(--ink)}
+.sheet textarea{min-height:72px;resize:vertical}
+.need{border-color:var(--red)!important;box-shadow:0 0 0 3px #fde3e0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
+.grid2>div{min-width:0}
+.seg{display:flex;gap:6px}
+.seg button{flex:1;height:44px;border:2px solid var(--line);background:#fff;border-radius:10px;font:inherit;font-size:15px;cursor:pointer}
+.seg button.pu.on{background:var(--red);border-color:var(--red);color:#fff}
+.seg button.pw.on{background:var(--org);border-color:var(--org);color:#fff}
+.seg button.pp.on{background:var(--grn);border-color:var(--grn);color:#fff}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.btn{flex:1;min-width:120px;height:48px;border:0;border-radius:12px;font:inherit;font-size:15px;font-weight:500;cursor:pointer;background:#eef1ed;color:var(--ink)}
+.btn.pri{background:var(--g);color:#fff}
+.btn.ok{background:#dff3e6;color:#1f6b3d}
+h3{font-size:15px;margin:22px 0 8px;border-top:1px solid var(--line);padding-top:14px}
+.hist{border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:6px;font-size:14px;cursor:pointer}
+.hist span{color:var(--mut);font-size:12px;margin-inline-end:6px}
+.hist em{float:left;font-style:normal;font-size:12px;color:var(--mut)}
+.res{color:#1f6b3d;font-size:13px;margin-top:3px}
+.locrow{display:flex;justify-content:space-between;padding:12px 4px;border-bottom:1px solid var(--line);cursor:pointer;font-size:15px}
+.locrow span:last-child{color:var(--mut);font-size:13px}
+.locrow b{color:var(--red)}
+.ord{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.ord b{background:#fff1c9;color:#7a5a00;border-radius:999px;padding:2px 10px;font-size:13px}
+.ord button{border:1px solid var(--line);background:#fff;border-radius:8px;width:40px;height:34px;font-size:16px;cursor:pointer}
+.star{color:#c98a00}
+.btn.mine{background:#fff1c9;color:#7a5a00}
+.ctr{background:#f4f8f5;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:12px}
+.btn.wa{background:#25d366;color:#fff}
+.btn.watch{background:#e3eefc;color:#1d4f91}
+.ord b.w{background:#e3eefc;color:#1d4f91}
+.today{background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,.07)}
+.today .tg{font-size:22px;font-weight:700}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.warn{margin-top:8px;background:#fdeed8;color:#94560b;border-radius:10px;padding:8px 10px;font-size:14px;cursor:pointer}
+.appr{display:flex;justify-content:space-between;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:6px}
+.appr-r{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.addap{border:1px dashed var(--line);border-radius:10px;padding:8px 10px;margin-top:8px}
+.addap summary{cursor:pointer;font-weight:500;padding:4px 0}
+.hist.off{opacity:.55}
+.sheet .chk{display:flex;align-items:center;gap:8px;font-size:15px;color:var(--ink)}
+.sheet .chk input{width:auto}
+.menu{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.mitem{display:block;width:100%;text-align:right;background:#f6f8f5;border:1px solid var(--line);border-radius:12px;padding:14px;font:inherit;font-size:16px;cursor:pointer;color:var(--ink)}
+.mitem span{display:block;font-size:13px;color:var(--mut);margin-top:2px}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;z-index:40;display:none;max-width:90vw;text-align:center}
+body.busy .btn,body.busy .seg button{opacity:.5;pointer-events:none}
+#bar{position:fixed;top:0;left:0;right:0;height:5px;background:#9fe3bd;z-index:50;display:none;animation:p 1s infinite linear}
+@keyframes p{0%{opacity:.3}50%{opacity:1}100%{opacity:.3}}
+.skel{height:74px;border-radius:12px;margin:10px 0;background:linear-gradient(90deg,#eceee9 25%,#f7f8f5 50%,#eceee9 75%);background-size:200% 100%;animation:sk 1.2s infinite linear}
+@keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+</style>
+<script>window.__errs=[];function __rep(m){window.__errs.push(m);document.title="ERR";var e=document.getElementById("list");if(e)e.innerHTML="<div class=\"empty\">"+window.__errs.join("<br>")+"</div>";try{var L=m+" | "+navigator.userAgent;if(window.MH_API){fetch(window.MH_API,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({fn:"logClientError",args:[L]})});}else{google.script.run.logClientError(L);}}catch(x){}}window.onerror=function(m,s,l,c){__rep("JS error: "+m+" (line "+l+":"+c+")");};window.addEventListener("unhandledrejection",function(ev){__rep("Promise error: "+(ev.reason&&ev.reason.message||ev.reason));});</script>
+</head>
+<body>
+<div id="splash" style="position:fixed;inset:0;background:#fff;z-index:90;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity .35s">
+  <img src="%%LOGO%%" alt="מעוז חיים" style="width:min(62vw,280px);height:auto" onerror="this.style.display='none'">
+  <div style="color:#6b7a70;font-size:15px">טוען…</div>
+</div>
+<div id="bar"></div>
+<header>
+  <div class="top">
+    <h1>מעוז חיים · תקלות ומשימות<small>מערכת החצרן</small></h1>
+    <button class="ibtn" onclick="openMenu()" title="תפריט" aria-label="תפריט">☰</button>
+    <button class="ibtn" onclick="load()" title="רענון">↻</button>
+    <button class="ibtn add" onclick="openNew()">＋ חדש</button>
+  </div>
+  <div class="stats" id="stats"></div>
+  <div class="tabs" id="tabs"></div>
+</header>
+<main>
+  <div id="demo"></div>
+  <div class="filters">
+    <input id="fQ" type="search" placeholder="🔍 חיפוש…" oninput="S.q=this.value;renderList()">
+    <select id="fLoc" onchange="S.loc=this.value;render()"></select>
+    <select id="fWho" onchange="S.who=this.value;render()"></select>
+  </div>
+  <div id="list"><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+</main>
+<div class="ov" id="ov" onclick="if(event.target===this)closeSheet()"><div class="sheet" id="sheet"></div></div>
+<div id="toast"></div>
+
+<script>
+const MH_API = window.MH_API || '';
+const HAS_GAS = !!MH_API || (typeof google !== 'undefined' && google.script && google.script.run);
+function rpc(fn, args){
+  if (MH_API) return fetch(MH_API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ fn, args }) })
+    .then(r => r.json())
+    .then(o => { if (o && o.ok) return o.result; throw new Error((o && o.error) || 'שגיאת שרת'); });
+  return new Promise((res, rej) => google.script.run.withSuccessHandler(res).withFailureHandler(rej)[fn](...args));
+}
+const S = {tasks:[], cfg:{}, approvals:[], recurring:[], tab:'today', q:'', loc:'', who:'', cur:null, inited:false, _locs:[]};
+const PRC = {'דחוף':'pu','השבוע':'pw','מתוכנן':'pp'};
+const STC = {'חדש':'sn','בטיפול':'si','ממתין':'sw','בוצע':'sd','נסגר':'sc'};
+const PR_RANK = {'דחוף':0,'השבוע':1,'מתוכנן':2};
+const OPEN = s => s !== 'בוצע' && s !== 'נסגר';
+function isToday(t){ if (!OPEN(t.status)) return false; const t0 = today(); return !!(t.mine || t.priority==='דחוף' || (t.due && t.due <= t0)); }
+const TABS = [
+  {id:'today',  name:'☀️ היום שלי', f:isToday},
+  {id:'mine',   name:'⭐ המשימות שלי', f:t => t.mine && OPEN(t.status)},
+  {id:'watch',  name:'👁 לבקרה שלי', f:t => t.watch && OPEN(t.status)},
+  {id:'new',    name:'חדשות לסיווג', f:t => t.status==='חדש' && !t.priority},
+  {id:'todo',   name:'לטיפול', f:t => (t.status==='חדש' && t.priority) || t.status==='בטיפול'},
+  {id:'wait',   name:'ממתין', f:t => t.status==='ממתין'},
+  {id:'check',  name:'לאישור סגירה', f:t => t.status==='בוצע'},
+  {id:'closed', name:'ארכיון', f:t => t.status==='נסגר'},
+  {id:'all',    name:'הכול', f:() => true}
+];
+
+
+const $ = id => document.getElementById(id);
+const val = id => ($(id) ? $(id).value : '');
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const today = () => new Date(Date.now() - new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
+const toD = x => x && x.length === 10 ? new Date(x + 'T12:00:00') : new Date(x);
+const fmtD = x => x ? toD(x).toLocaleDateString('he-IL',{day:'numeric',month:'numeric'}) : '';
+const fmtFull = x => x ? toD(x).toLocaleString('he-IL',{day:'numeric',month:'numeric',year:'2-digit',hour:'2-digit',minute:'2-digit'}) : '';
+function ago(x){
+  if(!x) return '';
+  const a = new Date(); a.setHours(0,0,0,0);
+  const b = new Date(x); b.setHours(0,0,0,0);
+  const d = Math.round((a-b)/864e5);
+  return d<=0 ? 'היום' : d===1 ? 'אתמול' : `לפני ${d} ימים`;
+}
+function opts(list, sel){
+  const l = (list||[]).slice();
+  if (sel && !l.includes(sel)) l.push(sel);
+  return l.map(o => `<option ${o===sel?'selected':''}>${esc(o)}</option>`).join('');
+}
+function errMsg(e){ return (e && e.message) || (e && e.type ? 'לא הצלחתי לקרוא את הקובץ' : String(e)); }
+function toast(m){ const t=$('toast'); t.textContent=m; t.style.display='block'; clearTimeout(t._h); t._h=setTimeout(()=>t.style.display='none',2800); }
+function busy(on, msg){ $('bar').style.display = on ? 'block' : 'none'; document.body.classList.toggle('busy', !!on); if (on && msg){ const t=$('toast'); t.textContent=msg; t.style.display='block'; clearTimeout(t._h); } }
+/* ---------- כניסה עם קוד אישי ---------- */
+function hideSplash(){ const s = document.getElementById('splash'); if (!s) return; s.style.opacity = '0'; setTimeout(() => s.remove(), 400); }
+setTimeout(hideSplash, 15000); // ביטחון: לא להיתקע על מסך הפתיחה
+function getCode(){ try{ return localStorage.getItem('mh_code') || window.__code || ''; }catch(e){ return window.__code || ''; } }
+function setCode(c){ window.__code = c; try{ c ? localStorage.setItem('mh_code', c) : localStorage.removeItem('mh_code'); }catch(e){} }
+let __askP = null;
+function askCode(msg){
+  if (__askP) return __askP;
+  __askP = new Promise(done => {
+    const d = document.createElement('div');
+    d.id = 'login';
+    d.style.cssText = 'position:fixed;inset:0;background:#f6f8f5;z-index:100;display:flex;align-items:center;justify-content:center;padding:20px';
+    d.innerHTML = '<div style="background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px;width:100%;max-width:340px;text-align:center">'
+      + '<h2 style="margin:0 0 6px">מעוז חיים · תקלות ומשימות</h2>'
+      + '<p style="margin:0 0 16px;color:var(--mut)">' + (msg || 'הזן את קוד הכניסה האישי שלך') + '</p>'
+      + '<input id="loginCode" type="password" inputmode="numeric" autocomplete="off" placeholder="קוד כניסה" style="width:100%;font-size:22px;text-align:center;letter-spacing:4px;padding:12px;border:1px solid var(--line);border-radius:12px;box-sizing:border-box">'
+      + '<div id="loginErr" style="color:#c0392b;min-height:22px;margin:8px 0"></div>'
+      + '<button id="loginBtn" class="btn" style="width:100%;padding:12px;font-size:17px">כניסה</button></div>';
+    document.body.appendChild(d);
+    const inp = d.querySelector('#loginCode'), err = d.querySelector('#loginErr'), btn = d.querySelector('#loginBtn');
+    const go = () => {
+      const c = inp.value.trim();
+      if (!c) { err.textContent = 'צריך להזין קוד'; return; }
+      btn.disabled = true; err.textContent = 'בודק…';
+      rpc('checkCode', [c]).then(r => {
+        btn.disabled = false;
+        if (r && r.ok) { setCode(c); d.remove(); __askP = null; toast('שלום ' + r.name); done(); }
+        else { err.textContent = r && r.locked ? 'יותר מדי ניסיונות. נסה שוב בעוד רבע שעה' : 'קוד שגוי'; inp.select(); }
+      }).catch(e => { btn.disabled = false; err.textContent = errMsg(e); });
+    };
+    btn.onclick = go;
+    inp.onkeydown = e => { if (e.key === 'Enter') go(); };
+    setTimeout(() => inp.focus(), 50);
+  });
+  return __askP;
+}
+function logout(){ setCode(''); location.reload(); }
+async function call(fn, ...args){
+  if (!HAS_GAS) return Demo[fn](...args);
+  if (!getCode()) await askCode();
+  try {
+    return await rpc(fn, [getCode(), ...args]);
+  } catch (e) {
+    if (String((e && e.message) || e).includes('AUTH_REQUIRED')) {
+      setCode('');
+      busy(false);
+      await askCode('הקוד לא בתוקף. הזן קוד כניסה');
+      return call(fn, ...args);
+    }
+    throw e;
+  }
+}
+function allLocations(){
+  const l = (S.cfg.locations||[]).slice();
+  S.tasks.forEach(t => { if (t.location && !l.includes(t.location)) l.push(t.location); });
+  return l;
+}
+function photoLinks(p, label){
+  return String(p||'').split(/[,\s]+/).filter(u => /^https?:/.test(u))
+    .map((u,i,a) => `<a class="lnk" target="_blank" rel="noopener" href="${esc(u)}">📷 ${label||'תמונה'}${a.length>1?' '+(i+1):''}</a>`).join('');
+}
+const fmtDY = x => x ? toD(x).toLocaleDateString('he-IL',{day:'numeric',month:'numeric',year:'2-digit'}) : '';
+function addDaysStr(s, n){ const d = new Date(s + 'T12:00:00'); d.setDate(d.getDate() + n); return d.toISOString().slice(0,10); }
+function applyData(d){ S.tasks = d.tasks; S.cfg = d.cfg; S.approvals = d.approvals || []; S.recurring = d.recurring || []; }
+
+
+async function load(){
+  busy(true);
+  try{
+    applyData(await call('getData'));
+    if (!S.inited){
+      S.inited = true;
+      S.tab = ['today', 'mine', 'watch', 'new'].find(id => S.tasks.some(tf(id))) || 'todo';
+    }
+    render();
+  }catch(e){
+    $('list').innerHTML = `<div class="empty">שגיאה בטעינה: ${esc(e.message||e)}</div>`;
+  }finally{ busy(false); hideSplash(); }
+}
+
+function render(){
+  const T = S.tasks, t0 = today();
+  const week = Date.now() - 7*864e5;
+  const n = f => T.filter(f).length;
+  $('stats').innerHTML = `
+    <div class="stat" onclick="goTab('today')"><b>${n(tf('today'))}</b>☀️ היום שלי</div>
+    <div class="stat" onclick="goTab('mine')"><b>${n(tf('mine'))}</b>⭐ המשימות שלי</div>
+    <div class="stat" onclick="goTab('watch')"><b>${n(tf('watch'))}</b>👁 לבקרה שלי</div>
+    <div class="stat" onclick="goTab('new')"><b>${n(tf('new'))}</b>חדשות לסיווג</div>
+    <div class="stat" onclick="goTab('todo')"><b>${n(t=>OPEN(t.status))}</b>פתוחות בסך הכול</div>
+    <div class="stat red" onclick="goTab('all')"><b>${n(t=>t.due && OPEN(t.status) && t.due < t0)}</b>באיחור</div>
+    <div class="stat" onclick="goTab('check')"><b>${n(t=>t.done && new Date(t.done).getTime() > week)}</b>בוצעו השבוע</div>`;
+  $('tabs').innerHTML = TABS.map(t => `<button class="tab ${S.tab===t.id?'on':''}" onclick="goTab('${t.id}')">${t.name}<i>${n(t.f)}</i></button>`).join('');
+  $('fLoc').innerHTML = `<option value="">📍 כל המיקומים</option>` + opts(allLocations(), S.loc);
+  $('fWho').innerHTML = `<option value="">👤 כל האחראים</option>` + opts(S.cfg.staff, S.who);
+  $('demo').innerHTML = HAS_GAS ? '' : '<div class="demo">מצב הדגמה – נתונים לדוגמה בלבד. אחרי ההתקנה בגוגל המערכת תעבוד עם הגיליון שלך.</div>';
+  renderList();
+}
+
+function tf(id){ return TABS.find(t => t.id === id).f; }
+function goTab(id){ S.tab = id; render(); window.scrollTo({top:0}); }
+
+function renderList(){
+  const tab = TABS.find(t => t.id === S.tab);
+  const q = S.q.trim();
+  const late = S.tab === 'all' && false;
+  const list = S.tasks.filter(tab.f)
+    .filter(t => (!S.loc || t.location === S.loc) && (!S.who || t.assignee === S.who))
+    .filter(t => !q || [t.id,t.description,t.location,t.reporter,t.notes,t.resolution,t.category,t.assignee,t.contractor].join(' ').includes(q))
+    .sort((a,b) => S.tab === 'today' ? (todayRank(a) - todayRank(b) || (Number(a.mine)||999) - (Number(b.mine)||999) || (PR_RANK[a.priority] ?? 3) - (PR_RANK[b.priority] ?? 3) || (a.due||'9999').localeCompare(b.due||'9999')) :
+      (S.tab === 'mine' || S.tab === 'watch') ? Number(a[S.tab]) - Number(b[S.tab]) :
+      (PR_RANK[a.priority] ?? 3) - (PR_RANK[b.priority] ?? 3) ||
+      (a.due||'9999').localeCompare(b.due||'9999') ||
+      ((S.tab==='closed'||S.tab==='check') ? (b.updated||'').localeCompare(a.updated||'') : (a.created||'').localeCompare(b.created||'')));
+  $('list').innerHTML = (S.tab === 'today' ? todayHeader() : '') + (list.length ? list.map(cardHTML).join('') :
+    `<div class="empty">${S.tab==='today' ? 'אין משימות להיום 🎉 אפשר להוסיף משימות ל"⭐ המשימות שלי"' : S.tab==='mine' ? 'הרשימה ריקה. פותחים משימה ולוחצים "⭐ הוסף למשימות שלי"' : S.tab==='watch' ? 'הרשימה ריקה. פותחים משימה ולוחצים "👁 הוסף לבקרה שלי"' : 'אין כאן משימות'}</div>`);
+}
+function todayRank(t){ const t0 = today(); return (t.due && t.due < t0) ? 0 : t.priority === 'דחוף' ? 1 : t.due === t0 ? 2 : 3; }
+function latestApprovals(){
+  const m = {};
+  (S.approvals||[]).forEach(a => { const k = a.location + '|' + a.type; if (a.expires && (!m[k] || a.expires > m[k].expires)) m[k] = a; });
+  return Object.values(m);
+}
+function todayHeader(){
+  const t0 = today(), h = new Date().getHours();
+  const greet = h < 12 ? 'בוקר טוב' : h < 17 ? 'צהריים טובים' : h < 21 ? 'ערב טוב' : 'לילה טוב';
+  const open = S.tasks.filter(t => OPEN(t.status));
+  const late = open.filter(t => t.due && t.due < t0).length, due = open.filter(t => t.due === t0).length;
+  S._warn = latestApprovals().filter(a => a.expires <= addDaysStr(t0, 30)).sort((a,b) => a.expires.localeCompare(b.expires));
+  return `<div class="today"><div class="tg">${greet} ${h >= 6 && h < 19 ? '☀️' : '🌙'}</div><div class="info">${new Date().toLocaleDateString('he-IL',{weekday:'long',day:'numeric',month:'numeric'})}</div>
+    <div class="chips"><span class="b pu">${late} באיחור</span><span class="b pw">${due} להיום</span><span class="b">${open.filter(t => t.mine).length} ב"המשימות שלי"</span></div>
+    ${S._warn.map((a,i) => `<div class="warn" onclick="openSiteByName(S._warn[${i}].location)">📑 ${esc(a.type)} – ${esc(a.location)}: ${a.expires < t0 ? 'פג תוקף ב-' + fmtDY(a.expires) : 'בתוקף עד ' + fmtDY(a.expires)}</div>`).join('')}</div>`;
+}
+
+function cardHTML(t){
+  const over = t.due && OPEN(t.status) && t.due < today();
+  const lf = (S.tab === 'mine' || S.tab === 'watch') ? S.tab : '';
+  const ord = lf ? `<div class="ord"><b class="${lf==='watch'?'w':''}">${lf==='watch'?'👁':'⭐'} ${listOf(lf).indexOf(String(t.id)) + 1}</b><button type="button" aria-label="הזז למעלה" onclick="moveIn(event,'${lf}','${esc(t.id)}',-1)">▲</button><button type="button" aria-label="הזז למטה" onclick="moveIn(event,'${lf}','${esc(t.id)}',1)">▼</button></div>` : '';
+  const marks = OPEN(t.status) ? ((t.mine && lf !== 'mine' ? '⭐ ' : '') + (t.watch && lf !== 'watch' ? '👁 ' : '')) : '';
+  return `<div class="card ${PRC[t.priority]||''}" onclick="openTask('${esc(t.id)}')">
+    ${ord}<div class="r1"><span class="loc">${marks ? `<span class="star">${marks}</span>` : ''}📍 ${esc(t.location||'ללא מיקום')}</span><span>#${esc(t.id)} · ${ago(t.created)}</span></div>
+    <div class="desc">${esc(t.description)}</div>
+    <div class="meta">
+      <span class="b ${STC[t.status]||''}">${esc(t.status||'חדש')}</span>
+      ${t.priority ? `<span class="b ${PRC[t.priority]}">${esc(t.priority)}</span>` : '<span class="b">לא סווג</span>'}
+      ${t.category ? `<span>${esc(t.category)}</span>` : ''}
+      ${t.assignee ? `<span>${t.assignee === CTR ? '🧰' : '👤'} ${esc(t.assignee === CTR && t.contractor ? t.contractor : t.assignee)}</span>` : ''}
+      ${t.due ? `<span class="${over?'late':''}">📅 ${fmtD(t.due)}${over?' · באיחור':''}</span>` : ''}
+      ${t.photo || t.photoAfter ? `<span>📷${t.photoAfter ? ' לפני/אחרי' : ''}</span>` : ''}
+      ${t.source && t.source!=='תושב' ? `<span>🏷 ${esc(t.source)}</span>` : ''}
+    </div></div>`;
+}
+
+
+function sheet(html){ $('sheet').innerHTML = html; $('ov').classList.add('on'); $('sheet').scrollTop = 0; }
+function closeSheet(){ $('ov').classList.remove('on'); S.cur = null; }
+function segPick(b){
+  const on = b.classList.contains('on');
+  b.parentNode.querySelectorAll('button').forEach(x => x.classList.remove('on'));
+  if (!on) b.classList.add('on');
+}
+const segVal = id => { const b = document.querySelector('#'+id+' .on'); return b ? b.dataset.v : ''; };
+const segHTML = (id, sel) => `<div class="seg" id="${id}">${(S.cfg.priorities||[]).map(p =>
+  `<button type="button" data-v="${esc(p)}" class="${PRC[p]} ${sel===p?'on':''}" onclick="segPick(this)">${p==='דחוף'?'🔴 ':p==='השבוע'?'🟠 ':'🟢 '}${esc(p)}</button>`).join('')}</div>`;
+
+
+function openTask(id){
+  const t = S.tasks.find(x => String(x.id) === String(id));
+  if (!t) return;
+  S.cur = t;
+  const hist = S.tasks.filter(x => x.location && x.location === t.location && x.id !== t.id)
+    .sort((a,b) => (b.created||'').localeCompare(a.created||'')).slice(0,10);
+  sheet(`
+    <div class="sh-head"><b>#${esc(t.id)} · ${esc(t.location||'ללא מיקום')}</b><button class="x" onclick="closeSheet()">✕</button></div>
+    <div class="desc big">${esc(t.description)}</div>
+    <div class="info">נפתח ${fmtFull(t.created)} · ${esc(t.source||'')}${t.reporter?' · '+esc(t.reporter):''}${t.done?' · הושלם '+fmtFull(t.done):''}</div>
+    <div class="links">${t.phone?`<a class="lnk" href="tel:${esc(t.phone)}">📞 ${esc(t.phone)}</a>`:''}${photoLinks(t.photo, 'לפני')}${photoLinks(t.photoAfter, 'אחרי')}</div>
+    <label>דחיפות</label>${segHTML('f_pr', t.priority)}
+    <div class="grid2">
+      <div><label>סטטוס</label><select id="f_st">${opts(S.cfg.statuses, t.status||'חדש')}</select></div>
+      <div><label>אחראי</label><select id="f_as" onchange="ctrToggle()"><option value="">—</option>${opts(S.cfg.staff, t.assignee)}</select></div>
+      <div><label>יעד לביצוע</label><input type="date" id="f_du" value="${esc(t.due||'')}"></div>
+      <div><label>סוג</label><select id="f_ca"><option value="">—</option>${opts(S.cfg.categories, t.category)}</select></div>
+    </div>
+    <div id="f_ctr" class="ctr" style="display:${t.assignee === CTR ? 'block' : 'none'}">
+      <b>🧰 פרטי הקבלן</b>
+      <div class="grid2">
+        <div><label>שם הקבלן</label><input id="f_cn" list="ctrList" value="${esc(t.contractor||'')}" placeholder="לדוגמה: יוסי מיזוג" oninput="ctrFill()"></div>
+        <div><label>טלפון</label><input id="f_cp" type="tel" value="${esc(t.contractorPhone||'')}" placeholder="05…"></div>
+      </div>
+      <datalist id="ctrList">${knownCtrs().map(c => `<option value="${esc(c.name)}">${esc(c.phone)}</option>`).join('')}</datalist>
+      <div class="btns"><button class="btn wa" onclick="sendCtr()">📲 שלח לקבלן בוואטסאפ</button></div>
+    </div>
+    <label>מה בוצע (נשמר בהיסטוריה של המיקום)</label>
+    <textarea id="f_re" placeholder="לדוגמה: הוחלף מפסק 16A בלוח, נבדק תקין">${esc(t.resolution||'')}</textarea>
+    <label>הערות</label><textarea id="f_no" placeholder="ממתין לחלק, הוזמן ספק…">${esc(t.notes||'')}</textarea>
+    <label>📷 ${t.photoAfter ? 'להחליף את תמונת האחרי' : 'תמונת אחרי (מומלץ כשמסיימים)'}</label><input type="file" id="f_after" accept="image/&#42;">
+    <div class="btns">${quickBtns(t)}</div>
+    <div class="btns"><button class="btn pri" onclick="saveTask()">💾 שמור</button></div>
+    ${hist.length ? `<h3>📚 היסטוריה ב${esc(t.location)}</h3>` + hist.map(h => `
+      <div class="hist" onclick="openTask('${esc(h.id)}')"><em>${esc(h.status)}</em><span>${fmtD(h.created)}</span>${esc(h.description)}
+      ${h.resolution?`<div class="res">✔ ${esc(h.resolution)}</div>`:''}</div>`).join('') : ''}
+  `);
+}
+
+function quickBtns(t){
+  const s = t.status || 'חדש', b = [];
+  if (OPEN(s)) b.push(`<button class="btn mine" onclick="toggleIn('mine','${esc(t.id)}')">${t.mine ? '⭐ הסר מהמשימות שלי' : '⭐ הוסף למשימות שלי'}</button>`,
+    `<button class="btn watch" onclick="toggleIn('watch','${esc(t.id)}')">${t.watch ? '👁 הסר מהבקרה שלי' : '👁 הוסף לבקרה שלי'}</button>`);
+  if (OPEN(s) && s !== 'בטיפול') b.push(`<button class="btn" onclick="quick('בטיפול')">▶ בטיפול</button>`);
+  if (OPEN(s) && s !== 'ממתין') b.push(`<button class="btn" onclick="quick('ממתין')">⏸ ממתין</button>`);
+  if (OPEN(s)) b.push(`<button class="btn ok" onclick="quick('בוצע')">✔ בוצע</button>`);
+  if (s === 'בוצע') b.push(`<button class="btn ok" onclick="quick('נסגר')">🔒 אושר – סגור</button>`, `<button class="btn" onclick="quick('בטיפול')">↩ החזר לטיפול</button>`);
+  if (s === 'נסגר') b.push(`<button class="btn" onclick="quick('בטיפול')">↩ פתח מחדש</button>`);
+  return b.join('');
+}
+function quick(st){ $('f_st').value = st; saveTask(); }
+
+const CTR = 'קבלן חוץ';
+function knownCtrs(){
+  const m = {};
+  S.tasks.forEach(t => { if (t.contractor) m[t.contractor] = t.contractorPhone || m[t.contractor] || ''; });
+  return Object.keys(m).sort().map(n => ({name:n, phone:m[n]}));
+}
+function ctrToggle(){ $('f_ctr').style.display = val('f_as') === CTR ? 'block' : 'none'; }
+function ctrFill(){
+  const c = knownCtrs().find(x => x.name === val('f_cn').trim());
+  if (c && c.phone) $('f_cp').value = c.phone;
+}
+function waPhone(p){
+  let d = String(p||'').replace(/\D/g, '');
+  if (d.indexOf('0') === 0) d = '972' + d.slice(1);
+  return d;
+}
+function ctrMsg(t, name){
+  const L = ['שלום ' + name + ',', 'כאן תום, החצרן של קיבוץ מעוז חיים.', 'נבקש את עזרתך בטיפול בתקלה הבאה:', '',
+    '📍 מיקום: ' + (t.location || '-'), '🔧 התקלה: ' + t.description];
+  const pr = segVal('f_pr'), du = val('f_du');
+  if (pr) L.push('⏱ דחיפות: ' + pr);
+  if (du) L.push('📅 יעד לביצוע: ' + toD(du).toLocaleDateString('he-IL'));
+  const ph = String(t.photo||'').split(/[,\s]+/).filter(u => /^https?:/.test(u));
+  if (ph.length) L.push('📷 תמונה: ' + ph[0]);
+  L.push('', 'אשמח לאישור ולמועד הגעה משוער. תודה!');
+  return L.join('\n');
+}
+function sendCtr(){
+  const t = S.cur; if (!t) return;
+  const name = val('f_cn').trim(), ph = waPhone(val('f_cp'));
+  if (!name){ $('f_cn').classList.add('need'); $('f_cn').focus(); toast('חסר שם הקבלן'); return; }
+  if (ph.length < 11){ $('f_cp').classList.add('need'); $('f_cp').focus(); toast('מספר הטלפון לא תקין'); return; }
+  const a = document.createElement('a');
+  a.href = 'https:\/\/wa.me/' + ph + '?text=' + encodeURIComponent(ctrMsg(t, name));
+  a.target = '_blank'; a.rel = 'noopener';
+  document.body.appendChild(a); a.click(); a.remove();
+  const no = $('f_no'), line = '📲 נשלח לקבלן ' + name + ' (' + new Date().toLocaleDateString('he-IL') + ')';
+  no.value = (no.value.trim() ? no.value.trim() + '\n' : '') + line;
+  saveTask();
+}
+
+
+function listOf(f){ return S.tasks.filter(t => t[f] && OPEN(t.status)).sort((a,b) => Number(a[f]) - Number(b[f])).map(t => String(t.id)); }
+async function saveList(f, ids){
+  // עדכון מיידי של הרשימה, והשמירה ברקע
+  const before = S.tasks;
+  S.tasks = S.tasks.map(t => { const i = ids.indexOf(String(t.id)); return Object.assign({}, t, { [f]: i >= 0 ? i + 1 : '' }); });
+  render(); toast('נשמר ✓');
+  try{ S.tasks = await call('setList', f, ids); render(); }
+  catch(e){ S.tasks = before; render(); toast('השמירה נכשלה והשינוי בוטל: ' + errMsg(e)); }
+}
+function toggleIn(f, id){
+  const l = listOf(f), i = l.indexOf(String(id));
+  if (i >= 0) l.splice(i, 1); else l.push(String(id));
+  closeSheet(); saveList(f, l);
+}
+function moveIn(ev, f, id, dir){
+  ev.stopPropagation();
+  if (document.body.classList.contains('busy')) return;
+  const l = listOf(f), i = l.indexOf(String(id)), j = i + dir;
+  if (i < 0 || j < 0 || j >= l.length) return;
+  const tmp = l[i]; l[i] = l[j]; l[j] = tmp;
+  saveList(f, l);
+}
+
+async function saveTask(){
+  const t = S.cur; if (!t || document.body.classList.contains('busy')) return;
+  const st = val('f_st');
+  const ch = {priority:segVal('f_pr'), status:st, assignee:val('f_as'), due:val('f_du'),
+              category:val('f_ca'), resolution:val('f_re').trim(), notes:val('f_no').trim(),
+              contractor:val('f_cn').trim(), contractorPhone:val('f_cp').trim()};
+  if ((st==='בוצע' || st==='נסגר') && !ch.resolution){
+    $('f_re').classList.add('need'); $('f_re').focus();
+    toast('כתוב בקצרה מה בוצע – זה הידע שנשאר למבנה');
+    return;
+  }
+  const fa = $('f_after') && $('f_after').files[0];
+  if (!fa) {
+    // עדכון מיידי: המסך משתנה עכשיו, והשמירה רצה ברקע. אם היא נכשלת — חוזרים אחורה.
+    const before = S.tasks.find(x => String(x.id) === String(t.id));
+    const optimistic = Object.assign({}, before, ch);
+    S.tasks = S.tasks.map(x => String(x.id) === String(t.id) ? optimistic : x);
+    closeSheet(); render(); toast('נשמר ✓');
+    try{
+      const u = await call('updateTask', t.id, ch, null);
+      S.tasks = S.tasks.map(x => String(x.id) === String(u.id) ? u : x);
+      render();
+    }catch(e){
+      S.tasks = S.tasks.map(x => String(x.id) === String(t.id) ? before : x);
+      render(); toast('השמירה נכשלה והשינוי בוטל: ' + errMsg(e));
+    }
+    return;
+  }
+  busy(true, 'מעלה תמונה ושומר…');
+  try{
+    const photo = await readPhoto(fa);
+    const u = await call('updateTask', t.id, ch, photo);
+    S.tasks = S.tasks.map(x => String(x.id) === String(u.id) ? u : x);
+    closeSheet(); render(); toast('נשמר ✓');
+  }catch(e){ toast('שגיאה: ' + errMsg(e)); }
+  finally{ busy(false); }
+}
+
+
+function openNew(){
+  sheet(`
+    <div class="sh-head"><b>➕ תקלה / משימה חדשה</b><button class="x" onclick="closeSheet()">✕</button></div>
+    <label>מיקום</label>
+    <select id="n_lo" onchange="$('n_lo2').style.display=this.value==='__o'?'block':'none'">
+      <option value="">בחר מיקום…</option>${opts(allLocations(), '')}<option value="__o">אחר – לכתוב…</option></select>
+    <input id="n_lo2" placeholder="כתוב מיקום" style="display:none;margin-top:6px">
+    <label>מה הבעיה / המשימה?</label><textarea id="n_de" placeholder="תיאור קצר וברור"></textarea>
+    <label>דחיפות</label>${segHTML('n_pr', '')}
+    <div class="grid2">
+      <div><label>סוג</label><select id="n_ca"><option value="">—</option>${opts(S.cfg.categories, '')}</select></div>
+      <div><label>אחראי</label><select id="n_as"><option value="">—</option>${opts(S.cfg.staff, '')}</select></div>
+      <div><label>יעד</label><input type="date" id="n_du"></div>
+      <div><label>מקור</label><select id="n_so"><option>מנהל</option><option>מנהל ענף</option><option>תושב</option><option>סיור שגרתי</option></select></div>
+      <div><label>מדווח (לא חובה)</label><input id="n_re" placeholder="שם"></div>
+      <div><label>טלפון (לא חובה)</label><input id="n_ph" type="tel" placeholder="05…"></div>
+    </div>
+    <label>תמונה (לא חובה)</label><input type="file" id="n_img" accept="image/&#42;">
+    <div class="btns"><button class="btn pri" onclick="saveNew()">➕ הוסף</button></div>
+  `);
+  setTimeout(() => $('n_de') && $('n_de').focus(), 50);
+}
+
+function readRaw(file){
+  return new Promise((res, rej) => {
+    if (file.size > 15e6) return rej(new Error('הקובץ גדול מדי (עד 15MB)'));
+    const fr = new FileReader();
+    fr.onload = () => res({data: String(fr.result).split(',')[1], mime: file.type || 'image/heic', name: file.name || ('photo_' + Date.now())});
+    fr.onerror = () => rej(new Error('לא הצלחתי לקרוא את הקובץ'));
+    fr.readAsDataURL(file);
+  });
+}
+function readPhoto(file){
+  return new Promise((res, rej) => {
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => {
+      try{
+        const k = Math.min(1, 1280 / Math.max(img.width, img.height));
+        const c = document.createElement('canvas');
+        c.width = Math.round(img.width*k); c.height = Math.round(img.height*k);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        let u = c.toDataURL('image/webp', .8), mime = 'image/webp', ext = '.webp';
+        if (u.indexOf('data:image/webp') !== 0) { u = c.toDataURL('image/jpeg', .8); mime = 'image/jpeg'; ext = '.jpg'; } // דפדפן בלי WebP
+        res({data:u.split(',')[1], mime, name:'photo_'+Date.now()+ext});
+      }catch(e){ readRaw(file).then(res, rej); }
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); readRaw(file).then(res, rej); };
+    img.src = url;
+  });
+}
+
+async function saveNew(){
+  if (document.body.classList.contains('busy')) return;
+  const loc = val('n_lo') === '__o' ? val('n_lo2').trim() : val('n_lo');
+  const t = {location:loc, description:val('n_de').trim(), priority:segVal('n_pr'), category:val('n_ca'),
+             assignee:val('n_as'), due:val('n_du'), source:val('n_so'), reporter:val('n_re').trim(), phone:val('n_ph').trim()};
+  if (!t.description){ $('n_de').classList.add('need'); $('n_de').focus(); toast('חסר תיאור'); return; }
+  busy(true, 'שומר…');
+  try{
+    const f = $('n_img').files[0];
+    const photo = f ? await readPhoto(f) : null;
+    const u = await call('addTask', t, photo);
+    S.tasks.push(u);
+    closeSheet(); render(); toast('נוסף ✔ (#' + u.id + ')');
+  }catch(e){ toast('שגיאה: ' + errMsg(e)); }
+  finally{ busy(false); }
+}
+
+
+function openLocs(){
+  const m = {};
+  S.tasks.forEach(t => { const l = t.location || 'ללא מיקום'; m[l] = m[l] || {o:0,a:0,u:0}; m[l].a++; if (OPEN(t.status)) m[l].o++; if (OPEN(t.status) && t.priority==='דחוף') m[l].u++; });
+  const list = allLocations();
+  list.sort((a,b) => ((m[b]||{}).o||0) - ((m[a]||{}).o||0));
+  S._locs = list;
+  sheet(`<div class="sh-head"><b>🏠 מיקומים ומבנים</b><button class="x" onclick="closeSheet()">✕</button></div>
+    <div class="info" style="margin:6px 0 8px">לחיצה על מקום פותחת את תיק השטח שלו: אישורים, עבודות קבועות והיסטוריה</div>
+    ${list.map((l,i) => { const c = m[l] || {o:0,a:0,u:0};
+      return `<div class="locrow" onclick="openSite(${i})"><span>${esc(l)}</span><span>${c.u?`<b>${c.u} דחוף</b> · `:''}${c.o} פתוחות · ${c.a} סה״כ</span></div>`; }).join('')}`);
+}
+function pickLoc(i){ S.loc = S._locs[i]; S.tab = 'all'; closeSheet(); render(); }
+
+
+function openMenu(){
+  sheet(`<div class="sh-head"><b>☰ תפריט</b><button class="x" onclick="closeSheet()">✕</button></div>
+    <div class="menu">
+      <button class="mitem" onclick="openLocs()">🏠 <b>תיקי שטח</b><span>מבנים, אישורים ובדיקות, היסטוריית טיפולים</span></button>
+      <button class="mitem" onclick="openRecurring()">🔁 <b>עבודות קבועות</b><span>${(S.recurring||[]).filter(r => r.active).length} פעילות · נפתחות לבד כמשימה</span></button>
+      <button class="mitem" onclick="sendReport()">📊 <b>שלח לי דוח חודשי עכשיו</b><span>הדוח נשלח גם אוטומטית ב-1 לכל חודש</span></button>
+      <button class="mitem" onclick="logout()">🔒 <b>יציאה מהאפליקציה</b><span>בכניסה הבאה יתבקש קוד אישי</span></button>
+    </div>`);
+}
+async function sendReport(){
+  busy(true, 'שולח את הדוח…');
+  try{ const m = await call('sendReportNow'); closeSheet(); toast(m); }
+  catch(e){ toast('שגיאה: ' + errMsg(e)); }
+  finally{ busy(false); }
+}
+
+
+function openSiteByName(loc){ S._locs = allLocations(); if (!S._locs.includes(loc)) S._locs.push(loc); openSite(S._locs.indexOf(loc)); }
+function apprStatus(a){ const t0 = today(); return a.expires < t0 ? ['pu','פג תוקף'] : a.expires <= addDaysStr(t0, 30) ? ['pw','פג בקרוב'] : ['pp','בתוקף']; }
+function openSite(i){
+  const loc = S._locs[i]; S._site = loc; S._siteIdx = i;
+  const tasks = S.tasks.filter(t => t.location === loc);
+  const openN = tasks.filter(t => OPEN(t.status)).length;
+  const ap = latestApprovals().filter(a => a.location === loc).sort((a,b) => a.expires.localeCompare(b.expires));
+  const jobs = (S.recurring||[]).filter(r => r.location === loc && r.active);
+  const hist = tasks.filter(t => !OPEN(t.status)).sort((a,b) => (b.done||'').localeCompare(a.done||'')).slice(0,5);
+  sheet(`<div class="sh-head"><b>🏠 ${esc(loc)}</b><button class="x" onclick="closeSheet()">✕</button></div>
+    <div class="info">${openN} משימות פתוחות · ${tasks.length} בסך הכול</div>
+    <div class="btns"><button class="btn" onclick="pickLoc(${i})">📋 כל המשימות במקום</button><button class="btn" onclick="openLocs()">↩ כל המקומות</button></div>
+    <h3>📑 אישורים ובדיקות</h3>
+    ${ap.map(a => { const s = apprStatus(a); return `<div class="appr"><div><b>${esc(a.type)}</b><div class="info">בתוקף עד ${fmtDY(a.expires)}${a.done ? ' · בוצע ' + fmtDY(a.done) : ''}</div></div>
+      <div class="appr-r"><span class="b ${s[0]}">${s[1]}</span>${a.doc ? `<a class="lnk" target="_blank" rel="noopener" href="${esc(a.doc)}">📄 מסמך</a>` : ''}</div></div>`; }).join('') || '<div class="info">אין עדיין אישורים רשומים למקום הזה</div>'}
+    <details class="addap"><summary>➕ הוסף או חדש אישור</summary>
+      <label>סוג אישור</label><select id="a_type">${opts(S.cfg.approvalTypes || [], '')}</select>
+      <div class="grid2"><div><label>תאריך ביצוע</label><input type="date" id="a_done" value="${today()}"></div>
+      <div><label>בתוקף עד</label><input type="date" id="a_exp" value="${addDaysStr(today(), 365)}"></div></div>
+      <label>צילום או קובץ של האישור (לא חובה)</label><input type="file" id="a_file" accept="image/&#42;,application/pdf">
+      <label>הערות</label><input id="a_notes" placeholder="שם הבודק, מספר אישור…">
+      <div class="btns"><button class="btn pri" onclick="saveApproval()">💾 שמור אישור</button></div>
+      <div class="info">חודש לפני שאישור פג תיפתח לך משימת חידוש ב"היום שלי", ותגיע תזכורת במייל.</div>
+    </details>
+    ${jobs.length ? '<h3>🔁 עבודות קבועות כאן</h3>' + jobs.map(r => `<div class="hist"><em>הבא: ${fmtDY(r.next)}</em>${esc(r.name)}<div class="res" style="color:var(--mut)">${freqLabel(r)}</div></div>`).join('') : ''}
+    ${hist.length ? '<h3>📚 טופל לאחרונה</h3>' + hist.map(h => `<div class="hist" onclick="openTask('${esc(h.id)}')"><span>${fmtD(h.done || h.created)}</span>${esc(h.description)}${h.resolution ? `<div class="res">✔ ${esc(h.resolution)}</div>` : ''}</div>`).join('') : ''}`);
+}
+function readFile(file){
+  if (String(file.type).indexOf('image') === 0) return readPhoto(file);
+  return new Promise((res, rej) => {
+    if (file.size > 8e6) return rej(new Error('הקובץ גדול מדי (עד 8MB)'));
+    const fr = new FileReader();
+    fr.onload = () => res({data: String(fr.result).split(',')[1], mime: file.type || 'application/pdf', name: file.name});
+    fr.onerror = rej; fr.readAsDataURL(file);
+  });
+}
+async function saveApproval(){
+  const a = {location: S._site, type: val('a_type'), done: val('a_done'), expires: val('a_exp'), notes: val('a_notes').trim()};
+  if (!a.expires){ $('a_exp').classList.add('need'); toast('חסר תאריך תוקף'); return; }
+  busy(true, 'שומר…');
+  try{
+    const f = $('a_file').files[0];
+    const file = f ? await readFile(f) : null;
+    applyData(await call('addApproval', a, file));
+    render(); openSite(S._siteIdx); toast('האישור נשמר ✔');
+  }catch(e){ toast('שגיאה: ' + errMsg(e)); }
+  finally{ busy(false); }
+}
+
+
+const FREQ = [['7d','כל שבוע',0,7],['14d','כל שבועיים',0,14],['1m','כל חודש',1,0],['3m','כל 3 חודשים',3,0],['6m','כל חצי שנה',6,0],['12m','כל שנה',12,0]];
+function freqOf(r){ return FREQ.find(x => (x[3] && x[3] === Number(r.days)) || (!Number(r.days) && x[2] === Number(r.months))); }
+function freqLabel(r){ const f = freqOf(r); return f ? f[1] : (Number(r.days) ? `כל ${r.days} ימים` : `כל ${r.months || 1} חודשים`); }
+function openRecurring(){
+  const list = (S.recurring||[]).slice().sort((a,b) => (b.active - a.active) || (a.next||'9').localeCompare(b.next||'9'));
+  S._rec = list;
+  sheet(`<div class="sh-head"><b>🔁 עבודות קבועות</b><button class="x" onclick="closeSheet()">✕</button></div>
+    <div class="info">כל עבודה נפתחת לבד כמשימה 3 ימים לפני המועד שלה, ואז המועד הבא מתקדם אוטומטית.</div>
+    <div class="btns"><button class="btn pri" onclick="editRecurring(-1)">➕ עבודה קבועה חדשה</button></div>
+    ${list.map((r,i) => `<div class="hist ${r.active ? '' : 'off'}" onclick="editRecurring(${i})"><em>${r.active ? 'הבא: ' + fmtDY(r.next) : 'מושבתת'}</em><b>${esc(r.name)}</b>${r.location ? ' · ' + esc(r.location) : ''}
+      <div class="res" style="color:var(--mut)">${freqLabel(r)}${r.assignee ? ' · 👤 ' + esc(r.assignee) : ''}</div></div>`).join('') || '<div class="empty">אין עדיין עבודות קבועות</div>'}`);
+}
+function editRecurring(i){
+  const r = i >= 0 ? S._rec[i] : {id:'', name:'', location:'', category:'', months:1, days:0, next:today(), assignee:'', active:true, notes:''};
+  const fv = (freqOf(r) || FREQ[2])[0];
+  S._recId = r.id;
+  sheet(`<div class="sh-head"><b>${r.id ? '✏️ עריכת עבודה קבועה' : '➕ עבודה קבועה חדשה'}</b><button class="x" onclick="closeSheet()">✕</button></div>
+    <label>מה עושים?</label><input id="r_name" value="${esc(r.name)}" placeholder="למשל: ניקוי מסננים בבריכה">
+    <label>מיקום</label><select id="r_loc"><option value="">—</option>${opts(allLocations(), r.location)}</select>
+    <div class="grid2">
+      <div><label>תדירות</label><select id="r_freq">${FREQ.map(f => `<option value="${f[0]}" ${f[0] === fv ? 'selected' : ''}>${f[1]}</option>`).join('')}</select></div>
+      <div><label>המועד הבא</label><input type="date" id="r_next" value="${esc(r.next || today())}"></div>
+      <div><label>סוג</label><select id="r_cat"><option value="">—</option>${opts(S.cfg.categories, r.category)}</select></div>
+      <div><label>אחראי</label><select id="r_as"><option value="">—</option>${opts(S.cfg.staff, r.assignee)}</select></div>
+    </div>
+    <label>הנחיות</label><textarea id="r_notes" placeholder="מה בודקים, איזה ציוד צריך…">${esc(r.notes)}</textarea>
+    <label class="chk"><input type="checkbox" id="r_active" ${r.active ? 'checked' : ''}> פעילה</label>
+    <div class="btns"><button class="btn" onclick="openRecurring()">↩ חזרה</button><button class="btn pri" onclick="saveRec()">💾 שמור</button></div>`);
+}
+async function saveRec(){
+  const f = FREQ.find(x => x[0] === val('r_freq'));
+  const job = {id: S._recId, name: val('r_name').trim(), location: val('r_loc'), category: val('r_cat'), assignee: val('r_as'),
+               next: val('r_next'), notes: val('r_notes').trim(), active: $('r_active').checked, months: f[2], days: f[3]};
+  if (!job.name){ $('r_name').classList.add('need'); toast('חסר שם לעבודה'); return; }
+  busy(true, 'שומר…');
+  try{ applyData(await call('saveRecurring', job)); render(); openRecurring(); toast('נשמר ✔'); }
+  catch(e){ toast('שגיאה: ' + errMsg(e)); }
+  finally{ busy(false); }
+}
+
+
+const Demo = (() => {
+  const ago = n => new Date(Date.now() - n*864e5).toISOString();
+  const day = n => new Date(Date.now() + n*864e5).toISOString().slice(0,10);
+  const K = ['id','created','source','reporter','phone','location','category','description','photo','priority','status','assignee','due','updated','done','resolution','notes','mine','watch','photoAfter','origin','contractor','contractorPhone'];
+  const blank = () => Object.fromEntries(K.map(k => [k,'']));
+  let next = 9;
+  const copy = o => JSON.parse(JSON.stringify(o));
+  const tasks = [
+    {id:'1',created:ago(0),source:'תושב',reporter:'רונית',phone:'0501234567',location:'גן משחקים חדש',category:'בטיחות',description:'בורג בולט מהמגלשה, ילדים נתפסים עם הבגדים',status:'חדש'},
+    {id:'2',created:ago(1),source:'מנהל ענף',reporter:'מנהל הבריכה',location:'בריכה',category:'אינסטלציה',description:'דליפה במקלחות הגברים, מים מצטברים על הרצפה',priority:'דחוף',status:'בטיפול',assignee:'תום',due:day(0),mine:'1'},
+    {id:'3',created:ago(2),source:'תושב',location:'חדר אוכל',category:'חשמל',description:'שתי מנורות לא עובדות בכניסה הראשית',priority:'השבוע',status:'חדש',assignee:'תום',due:day(3)},
+    {id:'4',created:ago(5),source:'מנהל ענף',reporter:'גלית',location:'מועדון',category:'מיזוג',description:'מזגן מטפטף מים על הקיר',priority:'השבוע',status:'ממתין',assignee:'קבלן חוץ',contractor:'יוסי מיזוג',contractorPhone:'0521234567',due:day(-1),notes:'הוזמן טכנאי מיזוג'},
+    {id:'5',created:ago(3),source:'סיור שגרתי',location:'פסולת גושית – דואר',category:'ניקיון ופסולת',description:'ערימת גזם גדולה ליד הדואר',priority:'מתוכנן',status:'חדש',due:day(6)},
+    {id:'6',created:ago(4),source:'מנהל',location:'אולם ספורט',category:'מבנה ונגרות',description:'ידית בהלה בדלת יציאת החירום שבורה',priority:'דחוף',status:'בוצע',assignee:'תום',resolution:'הוחלפה ידית בהלה, נבדק שהדלת נפתחת מבפנים',done:ago(1)},
+    {id:'7',created:ago(20),source:'תושב',location:'מועדון',category:'חשמל',description:'שקע חשמל מפויח ליד הבמה',priority:'דחוף',status:'נסגר',assignee:'תום',resolution:'הוחלף שקע, הקו נבדק ע״י חשמלאי',done:ago(18)},
+    {id:'8',created:ago(0),source:'תושב',reporter:'אבי',location:'תחנת אוטובוס',category:'ניקיון ופסולת',description:'פח מלא ושקיות זרוקות מסביב',status:'חדש'}
+  ].map(t => Object.assign(blank(), t, {updated: t.done || t.created}));
+  const cfg = {
+    staff:['תום','גלית','קבלן חוץ'],
+    categories:['חשמל','אינסטלציה','מיזוג','מבנה ונגרות','גינון','ניקיון ופסולת','בטיחות','מתקני משחק','אחר'],
+    locations:['מועדון','בית ניצן','אולם ספורט','בריכה','מזכירות','חדר אוכל','פאב','בית כנסת רשמי','גן משחקים חדש','גן משחקים ישן','תחנת אוטובוס','דואר','פסולת גושית – דואר'],
+    statuses:['חדש','בטיפול','ממתין','בוצע','נסגר'], priorities:['דחוף','השבוע','מתוכנן'],
+    approvalTypes:['כיבוי אש','חשמל','מזגנים','יועץ בטיחות','גז','מתקני משחקים','נגישות','אחר']
+  };
+  const approvals = [
+    {id:'a1',location:'מועדון',type:'כיבוי אש',done:'',expires:day(12),doc:'',notes:''},
+    {id:'a2',location:'מועדון',type:'חשמל',done:day(-160),expires:day(200),doc:'',notes:''},
+    {id:'a3',location:'בריכה',type:'יועץ בטיחות',done:'',expires:day(-3),doc:'',notes:''}
+  ];
+  const recurring = [
+    {id:'r1',location:'בריכה',name:'ניקוי מסננים',category:'אינסטלציה',months:1,days:0,next:day(5),assignee:'תום',active:true,notes:''},
+    {id:'r2',location:'בית ניצן',name:'בדיקת מזגנים לפני חורף',category:'מיזוג',months:12,days:0,next:day(8),assignee:'',active:true,notes:'חום וקור, אין נזילות'},
+    {id:'r3',location:'דואר',name:'סיבוב פחים',category:'ניקיון ופסולת',months:0,days:7,next:day(2),assignee:'תום',active:true,notes:''}
+  ];
+  const all = () => ({tasks: copy(tasks), cfg, approvals: copy(approvals), recurring: copy(recurring)});
+  return {
+    getData: async () => all(),
+    addApproval: async (a) => { approvals.push(Object.assign({id:'a' + Date.now(), doc:''}, a)); return all(); },
+    saveRecurring: async (j) => { const i = recurring.findIndex(x => x.id && x.id === j.id); if (i >= 0) recurring[i] = j; else recurring.push(Object.assign({}, j, {id:'r' + Date.now()})); return all(); },
+    sendReportNow: async () => 'הדוח נשלח (מצב הדגמה)',
+    updateTask: async (id, ch, photo) => {
+      const t = tasks.find(x => x.id === String(id));
+      if (photo) t.photoAfter = 'https:\/\/example.com/after.jpg';
+      Object.assign(t, ch, {updated: new Date().toISOString()});
+      if ((ch.status==='בוצע'||ch.status==='נסגר') && !t.done) t.done = new Date().toISOString();
+      if (ch.status && OPEN(ch.status)) t.done = '';
+      return copy(t);
+    },
+    setList: async (f, ids) => { tasks.forEach(t => { const i = ids.indexOf(String(t.id)); t[f] = i >= 0 ? String(i + 1) : ''; }); return copy(tasks); },
+    addTask: async (t) => {
+      const n = Object.assign(blank(), t, {id:String(next++), created:new Date().toISOString(), updated:new Date().toISOString(), status:'חדש'});
+      tasks.push(n); return copy(n);
+    }
+  };
+})();
+
+load();
+setInterval(() => { if (!document.hidden && HAS_GAS && !S.cur) load(); }, 120000);
+</script>
+</body>
+</html>
