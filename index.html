@@ -34,3 +34,20 @@ function show(html) {
 }
 function getCached() { try { return localStorage.getItem(UI_KEY); } catch (e) { return null; } }
 function setCached(h) { try { localStorage.setItem(UI_KEY, h); } catch (e) {} }
+// מחכים שהדף הקטן ייטען עד הסוף, ורק אז מחליפים אותו באפליקציה
+function whenReady(f) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', f); else f(); }
+var cached = getCached();
+var fresh = fetch(MH_URL + '?ui=1', { cache: 'no-store' })
+  .then(function (r) { if (!r.ok) throw new Error('שגיאה ' + r.status); return r.text(); })
+  .then(function (h) { if (h.indexOf('<head>') < 0) throw new Error('תשובה לא צפויה'); setCached(h); return h; });
+if (cached) {
+  whenReady(function () { show(cached); });
+  fresh.catch(function () {});
+} else {
+  fresh.then(function (h) { whenReady(function () { show(h); }); }).catch(function (e) {
+    document.getElementById('ld').innerHTML = '<div id="err">לא הצלחתי לטעון את האפליקציה (' + e.message + ').<br><br><button onclick="location.reload()" style="font-size:16px;padding:10px 20px">נסה שוב</button></div>';
+  });
+}
+</script>
+</body>
+</html>
