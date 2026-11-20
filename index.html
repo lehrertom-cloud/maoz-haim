@@ -3,19 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#1f4e3d">
+<meta name="theme-color" content="#0B1310">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>מעוז חיים · תקלות ומשימות</title>
 <link rel="preconnect" href="https://script.google.com">
 <link rel="preconnect" href="https://script.googleusercontent.com">
 <style>
-body{margin:0;font-family:system-ui,Arial,sans-serif;background:#f6f8f5}
-.hd{background:#1f4e3d;color:#fff;padding:14px 16px;font-weight:700;font-size:18px}
+body{margin:0;font-family:system-ui,Arial,sans-serif;background:#0B1310;color:#F3EEE3}
+.hd{background:linear-gradient(180deg,#1A2B22,#0B1310);color:#FFF7E8;padding:60px 18px 70px;font-weight:700;font-size:26px}
 .wrap{max-width:820px;margin:0 auto;padding:8px 14px}
-.skel{height:74px;border-radius:12px;margin:10px 0;background:linear-gradient(90deg,#eceee9 25%,#f7f8f5 50%,#eceee9 75%);background-size:200% 100%;animation:sk 1.2s infinite linear}
+.skel{height:74px;border-radius:12px;margin:10px 0;background:linear-gradient(90deg,#121D18 25%,#1B2A22 50%,#121D18 75%);background-size:200% 100%;animation:sk 1.2s infinite linear}
 @keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
-#err{text-align:center;color:#555;margin-top:30px}
+#err{text-align:center;color:#A9B3AC;margin-top:30px}
 </style>
 </head>
 <body>
@@ -34,21 +34,3 @@ function show(html) {
 }
 function getCached() { try { return localStorage.getItem(UI_KEY); } catch (e) { return null; } }
 function setCached(h) { try { localStorage.setItem(UI_KEY, h); } catch (e) {} }
-// מחכים שהדף הקטן ייטען עד הסוף, ורק אז מחליפים אותו באפליקציה
-function whenReady(f) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', f); else f(); }
-var cached = getCached();
-var fresh = fetch(MH_URL + '?ui=1', { cache: 'no-store' })
-  .then(function (r) { if (!r.ok) throw new Error('שגיאה ' + r.status); return r.text(); })
-  .then(function (h) { if (h.indexOf('<head>') < 0) throw new Error('תשובה לא צפויה'); setCached(h); return h; });
-if (cached) {
-  whenReady(function () { show(cached); });
-  fresh.catch(function () {});
-} else {
-  fresh.then(function (h) { whenReady(function () { show(h); }); }).catch(function (e) {
-    document.getElementById('ld').innerHTML = '<div id="err">לא הצלחתי לטעון את האפליקציה (' + e.message + ').<br><br><button onclick="location.reload()" style="font-size:16px;padding:10px 20px">נסה שוב</button></div>';
-  });
-}
-</script>
-</body>
-</html>
-
