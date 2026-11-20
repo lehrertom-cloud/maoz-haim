@@ -13,13 +13,13 @@
 <script>
 // המסכים נטענים מגוגל, והנתונים נשמרים רק בגיליון של מעוז חיים.
 // כל פעולה נבדקת בשרת מול הקוד האישי. בקובץ הזה אין נתונים ואין קודים.
-var MH_API = 'https://script.google.com/macros/s/AKfycbwILFwTYPqVd_PKCjD6FKGEobTF8pW2pPXOMgcPgUPrwcn77LoeZiAnE4sxZAd0skSFzw/exec';
+var MH_URL = 'https://script.google.com/macros/s/AKfycbwILFwTYPqVd_PKCjD6FKGEobTF8pW2pPXOMgcPgUPrwcn77LoeZiAnE4sxZAd0skSFzw/exec';
 function start() {
   document.getElementById('ld').textContent = 'טוען את האפליקציה…';
-  fetch(MH_API + '?ui=1')
+  fetch(MH_URL + '?ui=1')
     .then(function (r) { if (!r.ok) throw new Error('שגיאה ' + r.status); return r.text(); })
     .then(function (html) {
-      var inject = '<head><script>window.MH_API = ' + JSON.stringify(MH_API) + ';<\/script>';
+      var inject = '<head><script>window.MH_API = ' + JSON.stringify(MH_URL) + ';<\/script>';
       document.open();
       document.write(html.replace('<head>', inject));
       document.close();
@@ -32,3 +32,4 @@ start();
 </script>
 </body>
 </html>
+
